@@ -1,4 +1,4 @@
-package com.lovify.app.dto.auth.project;
+package com.lovify.app.dto.project;
 
 public record ProjectRequest(
         String name

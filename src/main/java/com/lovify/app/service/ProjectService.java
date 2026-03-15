@@ -1,8 +1,8 @@
 package com.lovify.app.service;
 
-import com.lovify.app.dto.auth.project.ProjectRequest;
-import com.lovify.app.dto.auth.project.ProjectResponse;
-import com.lovify.app.dto.auth.project.ProjectSummaryResponse;
+import com.lovify.app.dto.project.ProjectRequest;
+import com.lovify.app.dto.project.ProjectResponse;
+import com.lovify.app.dto.project.ProjectSummaryResponse;
 
 import java.util.List;
 

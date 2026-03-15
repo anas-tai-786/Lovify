@@ -1,8 +1,8 @@
 package com.lovify.app.controller;
 
-import com.lovify.app.dto.auth.project.ProjectRequest;
-import com.lovify.app.dto.auth.project.ProjectResponse;
-import com.lovify.app.dto.auth.project.ProjectSummaryResponse;
+import com.lovify.app.dto.project.ProjectRequest;
+import com.lovify.app.dto.project.ProjectResponse;
+import com.lovify.app.dto.project.ProjectSummaryResponse;
 import com.lovify.app.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

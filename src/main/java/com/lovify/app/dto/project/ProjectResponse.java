@@ -1,4 +1,4 @@
-package com.lovify.app.dto.auth.project;
+package com.lovify.app.dto.project;
 
 import com.lovify.app.dto.auth.UserProfileResponse;
 
