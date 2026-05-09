@@ -16,22 +16,17 @@ public class Subscription {
     Long id;
 
     User user;
-
     Plan plan;
-
-    String stripeCustomerId;
-
-    String stripeSubscriptionId;
 
     SubscriptionStatus status;
 
+    String stripeCustomerId;
+    String stripeSubscriptionId;
+
     Instant currentPeriodStart;
-
     Instant currentPeriodEnd;
-
     Boolean cancelAtPeriodEnd = false;
 
     Instant createdAt;
-
     Instant updatedAt;
 }

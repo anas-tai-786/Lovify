@@ -14,17 +14,15 @@ import java.time.Instant;
 public class ChatMessage {
 
     Long id;
-
     ChatSession chatSession;
 
     String content;
 
     MessageRole role;
 
-    String toolCalls;
+    String toolCalls; // JSON Array of Tools Called
 
-    Integer tokenUsed;
+    Integer tokensUsed;
 
     Instant createdAt;
-
 }

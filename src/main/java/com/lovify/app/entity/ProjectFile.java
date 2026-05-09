@@ -1,5 +1,6 @@
 package com.lovify.app.entity;
 
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,11 +21,12 @@ public class ProjectFile {
 
     String minioObjectKey;
 
+    Instant createdAt;
+
+    Instant updatedAt;
+
     User createdBy;
 
     User updatedBy;
 
-    Instant createdAt;
-
-    Instant updatedAt;
 }

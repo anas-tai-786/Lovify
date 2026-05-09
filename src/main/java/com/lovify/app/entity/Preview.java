@@ -18,16 +18,14 @@ public class Preview {
     Project project;
 
     String namespace;
-
     String podName;
-
     String previewUrl;
 
     PreviewStatus status;
 
     Instant startedAt;
-
     Instant terminatedAt;
 
     Instant createdAt;
+
 }

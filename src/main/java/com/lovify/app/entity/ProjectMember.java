@@ -34,4 +34,5 @@ public class ProjectMember {
 
     Instant invitedAt;
     Instant acceptedAt;
+
 }

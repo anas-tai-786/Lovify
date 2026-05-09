@@ -19,8 +19,7 @@ public class ChatSession {
     String title;
 
     Instant createdAt;
-
     Instant updatedAt;
 
-    Instant deletedAt;
+    Instant deletedAt; //soft delete
 }

@@ -4,10 +4,16 @@ import com.lovify.app.dto.project.ProjectRequest;
 import com.lovify.app.dto.project.ProjectResponse;
 import com.lovify.app.dto.project.ProjectSummaryResponse;
 import com.lovify.app.entity.Project;
+import com.lovify.app.entity.ProjectMember;
+import com.lovify.app.entity.ProjectMemberId;
 import com.lovify.app.entity.User;
+import com.lovify.app.enums.ProjectRole;
+import com.lovify.app.error.ResourceNotFoundException;
 import com.lovify.app.mapper.ProjectMapper;
+import com.lovify.app.repository.ProjectMemberRepository;
 import com.lovify.app.repository.ProjectRepository;
 import com.lovify.app.repository.UserRepository;
+import com.lovify.app.security.AuthUtil;
 import com.lovify.app.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -15,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -26,44 +33,76 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectRepository projectRepository;
     UserRepository userRepository;
     ProjectMapper projectMapper;
+    ProjectMemberRepository projectMemberRepository;
+    AuthUtil authUtil;
 
     @Override
-    public ProjectResponse createProject(ProjectRequest request, Long userId) {
-        User owner = userRepository.findById(userId).orElseThrow();
+    public ProjectResponse createProject(ProjectRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+//        User owner = userRepository.findById(userId).orElseThrow(
+//                () -> new ResourceNotFoundException("User", userId.toString())
+//        );
+        User owner = userRepository.getReferenceById(userId);
 
         Project project = Project.builder()
                 .name(request.name())
-                .owner(owner)
+                .isPublic(false)
                 .build();
+        project = projectRepository.save(project);
 
-        projectRepository.save(project);
+
+        ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), owner.getId());
+        ProjectMember projectMember = ProjectMember.builder()
+                .id(projectMemberId)
+                .projectRole(ProjectRole.OWNER)
+                .user(owner)
+                .acceptedAt(Instant.now())
+                .invitedAt(Instant.now())
+                .project(project)
+                .build();
+        projectMemberRepository.save(projectMember);
+
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public List<ProjectSummaryResponse> getUserProjects(Long userId) {
-
-//        return projectRepository.findAllAcceesibleByUser(userId)
-//                .stream()
-//                .map(projectMapper::toProjectSummaryResponse)
-//                .collect(Collectors.toList());
-
-        var projects = projectRepository.findAllAcceesibleByUser(userId);
-        return projectMapper.toListProjectSummaryResponse(projects);
+    public List<ProjectSummaryResponse> getUserProjects() {
+        Long userId = authUtil.getCurrentUserId();
+        var projects = projectRepository.findAllAccessibleByUser(userId);
+        return projectMapper.toListOfProjectSummaryResponse(projects);
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id, Long userId) {
-        return null;
+    public ProjectResponse getUserProjectById(Long id) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(id, userId);
+        return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request, Long userId) {
-        return null;
+    public ProjectResponse updateProject(Long id, ProjectRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(id, userId);
+
+        project.setName(request.name());
+        project = projectRepository.save(project);
+
+        return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public void softDelete(Long id, Long userId) {
+    public void softDelete(Long id) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(id, userId);
 
+        project.setDeletedAt(Instant.now());
+        projectRepository.save(project);
+    }
+
+    ///  INTERNAL FUNCTIONS
+
+    public Project getAccessibleProjectById(Long projectId, Long userId) {
+        return projectRepository.findAccessibleProjectById(projectId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", projectId.toString()));
     }
 }

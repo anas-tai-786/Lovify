@@ -1,9 +1,12 @@
 package com.lovify.app.dto.member;
 
 import com.lovify.app.enums.ProjectRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record InviteMemberRequest(
-        String email,
-        ProjectRole role
+        @Email @NotBlank String username,
+        @NotNull ProjectRole role
 ) {
 }
